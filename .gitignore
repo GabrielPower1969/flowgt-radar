@@ -1,0 +1,14 @@
+# ⚠️ API 密钥。这一行是这个文件存在的全部理由。
+# The API key. This line is the entire reason this file exists.
+config.md
+.env
+
+# 笔记本的输出会把 token 数、成本、甚至岗位原文一起存进 .ipynb。
+# 岗位是抓来的公开数据，但 checkpoint 里还会混进运行时的东西，一并挡掉。
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# 实验产物
+out/
+cache/
