@@ -78,6 +78,16 @@
   .prob h3{color:var(--danger);margin-bottom:6px}
   .prob .ev{font-family:var(--mono);font-size:12.5px;background:var(--danger-bg);border-radius:7px;padding:8px 11px;margin:9px 0;overflow-wrap:anywhere}
   .prob p{font-size:14.5px;color:var(--ink-2)}
+  /* 修好之后的样子：问题块的左边框仍然是红的（它曾经真的坏过），
+     修法块自己是绿的。红→绿 的对照本身就是这一节要讲的东西。 */
+  .prob{border-left-color:var(--signal)}
+  .prob h3{color:var(--ink)}
+  .fix{margin-top:11px;border-left:3px solid var(--signal);background:var(--accent-bg);
+       padding:11px 14px;border-radius:0 9px 9px 0;font-size:14px;color:var(--ink-2);line-height:1.65}
+  .fix code{font-size:12.5px}
+  .fixed-tag{display:inline-block;vertical-align:middle;margin-left:10px;padding:3px 9px;
+       border-radius:999px;background:var(--accent-bg);color:var(--accent);
+       font:800 11px/1.4 var(--body);letter-spacing:.04em;text-transform:none}
   .shape{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;font-size:14px}
   .shape>div{padding:11px 14px;border-bottom:1px solid var(--line)}
   .shape>div:nth-child(odd){background:var(--soft);color:var(--muted);font-weight:600}
@@ -222,14 +232,21 @@
 <hr>
 
 <section>
-  <h2>四个已证实的问题</h2>
-  <p class="lede">不是理论风险 —— 每一条都是拿库里的真数据数出来的。</p>
+  <h2>四个已证实的问题 <span class="fixed-tag">2026-08-12 全部修好</span></h2>
+  <p class="lede">不是理论风险 —— 每一条都是拿库里的真数据数出来的。
+  <b>修好了还留在这里</b>,因为四个共享同一个形状,而形状比修法值钱。</p>
 
   <div class="prob">
     <h3>1 · <code>fetch_jd()</code> 是死代码,JD 正文一个都没有</h3>
-    <div class="ev">scraper.py:291 定义了它 · 全仓库 0 处调用 · jd 字段 0/155 行有值</div>
-    <p><b>后果:</b>任何需要读岗位正文的功能都做不了 —— 包括 Radar,
-    因为 Radar 的全部前提就是「读正文,找出标题不提 AI、正文却在写 RAG 的岗位」。</p>
+    <div class="ev">scraper.py:291 定义了它 · 全仓库 0 处调用 · jd 字段 0/155 行有值<br>
+    而 matcher.py:43 的闸门正好是 WHERE jd != '' </div>
+    <p><b>后果比看起来重:</b>Claude 打分那一步<b>从来没有评过一份岗位</b>,
+    却每次都干干净净地跑完、报告里一条不显示 —— 看起来像「今天没有匹配的」。
+    Radar 也因此没有输入。</p>
+    <div class="fix"><b>✅ 修法</b> 改名 <code>fetch_detail()</code>,在 <code>scrape()</code>
+    的第三路真的被调用,走 <code>--with-jd</code> 开关。实测拿回 1521 / 2294 / 3012 /
+    3445 / 4737 字。顺带发现旧函数里那两个选择器在详情页上<b>也是 0 命中</b> ——
+    就算它当年被调用了,也只会掉到 <code>main</code> 兜底,把 5000 字页面家具当成职位描述存进去。</div>
   </div>
 
   <div class="prob">
@@ -238,21 +255,49 @@
     退路 h3 a &nbsp;→&nbsp; 32 · 17 · 8</div>
     <p><b>整个抓取一直靠退路在跑。</b>它没坏,但它在裸奔 ——
     哪天退路也变了,就会像 08-11 那样安静地归零。</p>
+    <div class="fix"><b>✅ 修法</b> 主选择器换成 <code>a[data-automation="jobTitle"]</code>,
+    对着 57 张存档卡片实测 <b>57/57</b>。但真正的修法不是换选择器,是
+    <code>test_selectors.py</code> —— 一道「哪个选择器死了就会响」的闸门。
+    没有存档页面时它<b>会红,不会绿</b>:一个「没东西可查所以通过」的测试比没有测试更糟。</div>
   </div>
 
   <div class="prob">
     <h3>3 · <code>job_type</code> 永远是空的</h3>
     <div class="ev">job_type 有值的 0/155 · 两个选择器在 Seek 页面上都不存在</div>
     <p><b>没有任何地方报错</b>,因为「选择器匹配不到」返回的是空字符串,不是异常。</p>
+    <div class="fix"><b>✅ 修法</b> 卡片上确实没有这个属性 —— 存档页里唯一带 WorkType 的是
+    <b>筛选面板</b>(toggleWorkTypeButton、refineWorkType,各 1 次),那是页面家具不是岗位数据。
+    真正的位置是给读屏软件的一句话 <code>This is a Full time job</code>,57/57 张卡都有。
+    用 <code>text_content()</code> 而不是 <code>inner_text()</code>:那句话视觉隐藏,
+    <code>inner_text</code> 只返回渲染出来的文字。<br>
+    <b>代价说清楚:</b>这是无障碍文案,不是数据契约,Seek 改文案它就没了 —— 所以闸门里有一条断言守着它。</div>
   </div>
 
   <div class="prob">
     <h3>4 · 「Featured」岗位永远进不了邮件</h3>
-    <div class="ev">posted_date = 'Featured' &nbsp;4 行<br>
+    <div class="ev">posted_date = 'Featured' &nbsp;约 6%(存档页 2/32)<br>
     → parse_age 返回 None → posted_at 为 null<br>
     → send-digest.js 硬条件 posted_at IS NOT NULL 挡住</div>
-    <p>Seek 的推广位不显示年龄。<b>这是那个修法的代价,而且这个代价是划算的</b> ——
-    比起把它们当成「刚刚」发出去要好得多。但要知道它存在。</p>
+    <p>Seek 的推广位不显示年龄。我之前写「这是对的设计,代价划算」——</p>
+    <div class="fix"><b>✅ 修法</b> 那句话<b>只对了一半</b>。
+    对的部分:<b>不该编一个日期填进去</b>,那是撒谎。
+    错的部分:<b>把「不知道」当成了终点</b> —— 其实可以去问。<br>
+    详情页上有 <code>Posted 13h ago</code>。实测置顶卡
+    <code>'Featured'</code> → <code>'13h ago'</code> / <code>'16h ago'</code>。<br>
+    日期必须锚在 <code>Posted</code> 上:页面右边「更多岗位」里也有 2d ago、6d ago,
+    不锚就会把别人的日期安到这个岗位头上 —— 那种错不会报,只会静静地错。<br>
+    <b>交叉验证:</b>普通卡片上写 20h ago,详情页也回 20h ago,一致。</div>
+  </div>
+
+  <div class="prob">
+    <h3>5 · (顺带挖出来的)修好的字段补不到旧行上</h3>
+    <div class="ev">INSERT OR IGNORE 遇到已存在的行直接跳过 · 08-12 当天 171 行受影响</div>
+    <p>用旧代码抓进来的行<b>永远补不上后来才修好的字段</b>。重跑采集也不会变,
+    因为它们「已经存在」。</p>
+    <div class="fix"><b>✅ 修法</b> 重抓时填<b>现在是空的</b>格子,绝不覆盖已有的值。
+    <code>posted_date</code> 刻意排除 —— 它存的是相对时间(<code>3h ago</code>),
+    要配着当初的 <code>scraped_at</code> 才有意义;拿今天的 3h ago 覆盖三天前那一行,
+    会把三天前的岗位说成三小时前。<b>又是一个不报错的错。</b></div>
   </div>
 </section>
 
