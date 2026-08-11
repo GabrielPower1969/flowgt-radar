@@ -1,0 +1,283 @@
+<title>爬虫全链路 · 从一张网页到数据库里的一行</title>
+<style>
+  :root{
+    --ink:#0C1A14; --ink-2:#3A4A43; --muted:#67756D;
+    --bg:#FBFCFB; --card:#FFFFFF; --soft:#F4F7F5; --line:#E2E8E5;
+    --accent:#00694B; --accent-bg:#EAF4F0; --signal:#00C26D;
+    --warn:#8A5A00; --warn-bg:#FDF6E8; --danger:#A3261C; --danger-bg:#FDF0EE;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Noto Sans SC",Roboto,sans-serif;
+    --shadow:0 1px 2px rgba(12,26,20,.04),0 10px 28px -16px rgba(12,26,20,.16);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --ink:#EDF2EF; --ink-2:#C4D0CA; --muted:#94A49C;
+    --bg:#0B100E; --card:#131A17; --soft:#18211D; --line:#26312C;
+    --accent:#5BC79E; --accent-bg:#16241E;
+    --warn:#E0AC5A; --warn-bg:#241C0E; --danger:#FF9B8F; --danger-bg:#2A1512;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -16px rgba(0,0,0,.7);
+  }}
+  :root[data-theme="dark"]{
+    --ink:#EDF2EF; --ink-2:#C4D0CA; --muted:#94A49C;
+    --bg:#0B100E; --card:#131A17; --soft:#18211D; --line:#26312C;
+    --accent:#5BC79E; --accent-bg:#16241E;
+    --warn:#E0AC5A; --warn-bg:#241C0E; --danger:#FF9B8F; --danger-bg:#2A1512;
+  }
+  :root[data-theme="light"]{
+    --ink:#0C1A14; --ink-2:#3A4A43; --muted:#67756D;
+    --bg:#FBFCFB; --card:#FFFFFF; --soft:#F4F7F5; --line:#E2E8E5;
+    --accent:#00694B; --accent-bg:#EAF4F0;
+    --warn:#8A5A00; --warn-bg:#FDF6E8; --danger:#A3261C; --danger-bg:#FDF0EE;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--body);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:52px 20px 96px;display:flex;flex-direction:column;gap:44px}
+  h1,h2,h3{margin:0;letter-spacing:-.02em;text-wrap:balance}
+  h1{font-size:clamp(28px,5.5vw,40px);line-height:1.12}
+  h2{font-size:clamp(20px,3.6vw,25px);line-height:1.3}
+  h3{font-size:16px;line-height:1.35}
+  p{margin:0}
+  .eyebrow{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .lede{color:var(--muted);font-size:17px;max-width:60ch}
+  section{display:flex;flex-direction:column;gap:16px}
+  hr{border:0;border-top:1px solid var(--line);margin:0}
+  code{font-family:var(--mono);font-size:.86em;background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+  .note{border-left:3px solid var(--signal);background:var(--soft);padding:13px 16px;border-radius:0 10px 10px 0;color:var(--ink-2);font-size:15px}
+  .warn{border-left:3px solid var(--warn);background:var(--warn-bg);padding:13px 16px;border-radius:0 10px 10px 0;color:var(--ink-2);font-size:15px}
+
+  /* ── 管线 ── */
+  .pipe{display:flex;flex-direction:column;gap:0}
+  .stage{display:grid;grid-template-columns:46px 1fr;gap:16px;align-items:start}
+  .num{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;
+    background:var(--accent);color:#fff;font:800 18px/1 var(--body);flex:none}
+  :root[data-theme="dark"] .num,html:not([data-theme]) .num{color:#fff}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .num{background:var(--signal);color:#0C1A14}}
+  :root[data-theme="dark"] .num{background:var(--signal);color:#0C1A14}
+  .body{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 20px;box-shadow:var(--shadow);min-width:0}
+  .body h3{margin-bottom:3px}
+  .where{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:10px;overflow-wrap:anywhere}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin:12px 0 4px}
+  .box{font-family:var(--mono);font-size:12px;background:var(--soft);border:1px solid var(--line);border-radius:7px;padding:6px 10px;min-width:0;overflow-wrap:anywhere}
+  .arrow{color:var(--accent);font-weight:800;flex:none}
+  .why{font-size:14px;color:var(--ink-2);margin-top:10px}
+  .connector{width:46px;display:grid;place-items:center;height:26px}
+  .connector span{width:2px;height:100%;background:var(--line);display:block}
+  .rowpair{display:grid;grid-template-columns:46px 1fr;gap:16px}
+
+  /* ── 例子表 ── */
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:800}
+  td:first-child{color:var(--muted);font-size:13px;white-space:nowrap}
+  .raw{font-family:var(--mono);font-size:12.5px}
+  .derived{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:600}
+
+  /* ── 问题 ── */
+  .prob{border:1px solid var(--line);border-left:4px solid var(--danger);border-radius:0 12px 12px 0;
+    background:var(--card);padding:16px 18px;box-shadow:var(--shadow)}
+  .prob h3{color:var(--danger);margin-bottom:6px}
+  .prob .ev{font-family:var(--mono);font-size:12.5px;background:var(--danger-bg);border-radius:7px;padding:8px 11px;margin:9px 0;overflow-wrap:anywhere}
+  .prob p{font-size:14.5px;color:var(--ink-2)}
+  .shape{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;font-size:14px}
+  .shape>div{padding:11px 14px;border-bottom:1px solid var(--line)}
+  .shape>div:nth-child(odd){background:var(--soft);color:var(--muted);font-weight:600}
+  .shape>div:nth-last-child(-n+2){border-bottom:0}
+  @media(max-width:560px){.shape{grid-template-columns:1fr}.shape>div:nth-child(odd){padding-bottom:2px}}
+  .foot{color:var(--muted);font-size:13px;line-height:1.75}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">FlowGT · 工程说明</p>
+  <h1>从一张网页,到数据库里的一行</h1>
+  <p class="lede">Seek 上一个岗位广告,怎么变成 FlowGT 数据库里的一行、
+  最后出现在会员的邮箱里。中间被动了哪些手脚。</p>
+</header>
+
+<hr>
+
+<section>
+  <h2>主线例子</h2>
+  <p>整份说明追同一个真实岗位,看它在每一站变成什么样子。</p>
+  <div class="tablewrap">
+    <table>
+      <tr><th>字段</th><th>① 爬虫刚抓下来(本地)</th><th>② 落进生产库之后</th></tr>
+      <tr><td>身份</td><td class="raw">seek-93884197</td><td class="raw">seek-93884197 <span style="color:var(--muted)">← 同一个</span></td></tr>
+      <tr><td>标题</td><td class="raw">Senior Software Engineer</td><td class="raw">title_raw &nbsp;原文一字不改</td></tr>
+      <tr><td>地点</td><td class="raw">Christchurch, Canterbury</td><td class="raw">location_raw 原文<br><span class="derived">region = christchurch</span></td></tr>
+      <tr><td>方向</td><td style="color:var(--muted)">（没有）</td><td class="derived">role_family = software<br>role_group = dev</td></tr>
+      <tr><td>级别</td><td style="color:var(--muted)">（没有）</td><td class="derived">seniority = senior</td></tr>
+      <tr><td><b>发布时间</b></td><td class="raw" style="color:var(--danger)">'10h ago' &nbsp;一个字符串</td><td class="derived">posted_at = 1786398766</td></tr>
+      <tr><td>存活</td><td style="color:var(--muted)">（没有）</td><td class="derived">first_seen_day / last_seen_day / is_open</td></tr>
+    </table>
+  </div>
+  <div class="note"><b>看那一行加粗的。</b><code>'10h ago'</code> 是给人读的,
+  <code>1786398766</code> 是给机器比较的。这一步就是整条链路的分水岭 ——
+  也是 2026-08-09 那次事故的所在。</div>
+</section>
+
+<hr>
+
+<section>
+  <h2>七个阶段</h2>
+
+  <div class="pipe">
+
+    <div class="stage"><div class="num">1</div><div class="body">
+      <h3>决定抓哪些网址 <span style="color:var(--muted);font-weight:400">URL planning</span></h3>
+      <div class="where">config.py · scraper.py:88 build_search_url · scraper.py:106 build_classification_url</div>
+      <div class="flow"><span class="box">7 个常量</span><span class="arrow">→</span><span class="box">最多 412 条网址</span></div>
+      <p class="why"><b>两条路。</b>分类落地页是主路（2 类 × 8 页 = 最多 16 次加载,拿到那一类的全集）;
+      关键词是补网（33 词 × 3 地区 × 4 页 = 最多 396 次）。<br>
+      <b>为什么主次这么分:</b>396 比 16 贵 24 倍,而且关键词<b>会漏</b> ——
+      标题和正文里没有那 33 个词的岗位,关键词永远找不到。</p>
+      <div class="warn"><code>daterange=1</code> = 只要 24 小时内的。这个数曾经是 <b>7</b>,
+      而邮件标题写着「今日岗位」—— 那就是 2026-08-09 事故。</div>
+    </div></div>
+
+    <div class="rowpair"><div class="connector"><span></span></div><div></div></div>
+
+    <div class="stage"><div class="num">2</div><div class="body">
+      <h3>真浏览器打开页面 <span style="color:var(--muted);font-weight:400">headless browser</span></h3>
+      <div class="where">scraper.py:251 · Playwright + Chromium</div>
+      <div class="flow"><span class="box">网址</span><span class="arrow">→</span><span class="box">渲染完的 HTML</span></div>
+      <p class="why"><b>为什么非浏览器不可:</b>Seek 的岗位是 JavaScript 画上去的。
+      服务器发回的第一份 HTML 里<b>没有岗位</b>,只有一段 JS。
+      纯 HTTP 抓取 → 0 张卡片;真浏览器 → 32 张。</p>
+      <div class="note"><b>2026-08-11 补的守卫:</b><code>assert_real_page()</code> ——
+      一张验证页不是「这一类没有岗位」。在它之前,101 个页面全部报「没有岗位」,工作流一路绿。</div>
+    </div></div>
+
+    <div class="rowpair"><div class="connector"><span></span></div><div></div></div>
+
+    <div class="stage"><div class="num">3</div><div class="body">
+      <h3>从 HTML 抠出字段 <span style="color:var(--muted);font-weight:400">extraction</span></h3>
+      <div class="where">scraper.py:218 extract_job_cards</div>
+      <div class="flow"><span class="box">HTML</span><span class="arrow">→</span><span class="box">dict · 全是原文</span></div>
+      <p class="why">入口是 <code>[data-testid="job-card"]</code> —— 它死了就全盘归零。
+      然后每个字段各有一条<b>退路 fallback</b>,因为 Seek 改过版。</p>
+      <div class="warn"><b>一个匹配不到的选择器不会报错</b>,只会安静地返回空字符串。
+      这是这一段所有问题的根源 —— 见下面的问题 2 和 3。</div>
+    </div></div>
+
+    <div class="rowpair"><div class="connector"><span></span></div><div></div></div>
+
+    <div class="stage"><div class="num">4</div><div class="body">
+      <h3>存进本地 SQLite <span style="color:var(--muted);font-weight:400">local staging</span></h3>
+      <div class="where">scraper.py:48 job_id · scraper.py:69 save_job → jobs.db</div>
+      <div class="flow"><span class="box">dict</span><span class="arrow">→</span><span class="box">jobs.db 一行</span></div>
+      <p class="why"><b>身份用岗位号,不用整条 URL。</b>Seek 的链接问号后面是每次搜索都不同的追踪码 ——
+      对整条 URL 取哈希,同一个岗位在 33 个关键词下会得到 33 个不同的 id。<br>
+      <b>真发生过:</b>844 行里其实只有 244 个真岗位。</p>
+    </div></div>
+
+    <div class="rowpair"><div class="connector"><span></span></div><div></div></div>
+
+    <div class="stage"><div class="num">5</div><div class="body">
+      <h3>打包推给 API <span style="color:var(--muted);font-weight:400">push</span></h3>
+      <div class="where">push.py · HTTP POST → /api/ingest/jobs</div>
+      <div class="flow"><span class="box">'10h ago'</span><span class="arrow">→</span><span class="box">1786398766</span></div>
+      <p class="why"><b>整条链路的分水岭。</b>邮件的筛选条件是「36 小时内发布的」,
+      字符串没法比较大小。<br>
+      <b>关键设计:</b><code>parse_age()</code> 解析不出来时返回 <code>None</code>,
+      <b>不是返回「现在」</b>。以前解析不出就当成「刚刚」,于是一周前的岗位被当成今天的发出去。</p>
+      <div class="note">宁可安静地少一条,也不要自信地错一条。</div>
+    </div></div>
+
+    <div class="rowpair"><div class="connector"><span></span></div><div></div></div>
+
+    <div class="stage"><div class="num">6</div><div class="body">
+      <h3>服务端归一化 + 落库 <span style="color:var(--muted);font-weight:400">ingest &amp; normalise</span></h3>
+      <div class="where">flowgt-website/functions/api/ingest/jobs.js</div>
+      <div class="flow"><span class="box">JSON · 全是原文</span><span class="arrow">→</span><span class="box">原文 + 判断</span></div>
+      <p class="why"><b>这一步给数据加判断</b>,但<b>原文永远保留</b>。
+      归一化规则改了可以拿原文重跑;原文丢了就永远回不来。
+      这就是为什么表里同时有 <code>title_raw</code> 和 <code>role_family</code>。</p>
+      <div class="note"><b>一道闸门:</b><code>isITRole()</code> 信 Seek 自己的分类,不靠标题猜。<br>
+      2026-08-10 实测:用标题猜的那一版,把 79 个来自 ICT 分类页的岗位<b>拒掉了 34 个</b>,
+      包括 <code>Digital Graduate - Data and AI</code>。<br>
+      <b>来源已经回答过的问题,不要用启发式再答一遍。</b></div>
+    </div></div>
+
+    <div class="rowpair"><div class="connector"><span></span></div><div></div></div>
+
+    <div class="stage"><div class="num">7</div><div class="body">
+      <h3>生产 D1 的一行 <span style="color:var(--muted);font-weight:400">the fact row</span></h3>
+      <div class="where">migrations/0005-job-market.sql:32</div>
+      <div class="shape">
+        <div>原文 raw</div><div><code>title_raw</code> <code>company</code> <code>location_raw</code> <code>url</code> — 抄来的,永不修改</div>
+        <div>判断 derived</div><div><code>role_family</code> <code>role_group</code> <code>seniority</code> <code>region</code> — 算出来的,规则变了可重算</div>
+        <div>存活 lifecycle</div><div><code>first_seen_day</code> <code>last_seen_day</code> <code>is_open</code> <code>posted_at</code> — 这个岗位的一生</div>
+      </div>
+      <div class="warn" style="margin-top:12px"><b><code>first_seen_day</code> 和 <code>posted_at</code> 不是一回事。</b><br>
+      前者是<b>我们第一次看见它</b>的日子,后者是<b>它发布</b>的时刻。<br>
+      2026-08-09 事故就是把这两个搞混了:第一次全量采集把过去一周的岗位一次性入库,
+      它们的 <code>first_seen_day</code> 全是当天,于是全部被当成「今日岗位」发出去。</div>
+    </div></div>
+
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2>四个已证实的问题</h2>
+  <p class="lede">不是理论风险 —— 每一条都是拿库里的真数据数出来的。</p>
+
+  <div class="prob">
+    <h3>1 · <code>fetch_jd()</code> 是死代码,JD 正文一个都没有</h3>
+    <div class="ev">scraper.py:291 定义了它 · 全仓库 0 处调用 · jd 字段 0/155 行有值</div>
+    <p><b>后果:</b>任何需要读岗位正文的功能都做不了 —— 包括 Radar,
+    因为 Radar 的全部前提就是「读正文,找出标题不提 AI、正文却在写 RAG 的岗位」。</p>
+  </div>
+
+  <div class="prob">
+    <h3>2 · 主标题选择器已经死在 Seek 上</h3>
+    <div class="ev">a[data-testid="job-title"] &nbsp;→&nbsp; ICT 页 0 个 · Sci-Tech 页 0 个 · 关键词页 0 个<br>
+    退路 h3 a &nbsp;→&nbsp; 32 · 17 · 8</div>
+    <p><b>整个抓取一直靠退路在跑。</b>它没坏,但它在裸奔 ——
+    哪天退路也变了,就会像 08-11 那样安静地归零。</p>
+  </div>
+
+  <div class="prob">
+    <h3>3 · <code>job_type</code> 永远是空的</h3>
+    <div class="ev">job_type 有值的 0/155 · 两个选择器在 Seek 页面上都不存在</div>
+    <p><b>没有任何地方报错</b>,因为「选择器匹配不到」返回的是空字符串,不是异常。</p>
+  </div>
+
+  <div class="prob">
+    <h3>4 · 「Featured」岗位永远进不了邮件</h3>
+    <div class="ev">posted_date = 'Featured' &nbsp;4 行<br>
+    → parse_age 返回 None → posted_at 为 null<br>
+    → send-digest.js 硬条件 posted_at IS NOT NULL 挡住</div>
+    <p>Seek 的推广位不显示年龄。<b>这是那个修法的代价,而且这个代价是划算的</b> ——
+    比起把它们当成「刚刚」发出去要好得多。但要知道它存在。</p>
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2>一个贯穿始终的形状</h2>
+  <p>上面四个问题,<b>没有一个会报错。</b></p>
+  <div class="shape">
+    <div>选择器失效</div><div>返回空字符串</div>
+    <div>函数没被调用</div><div>字段一直是空</div>
+    <div>时间解析失败</div><div>返回 None</div>
+    <div>被 Cloudflare 拦住</div><div>「本页没有岗位」</div>
+  </div>
+  <div class="note" style="margin-top:14px"><b>每一个失败,都被渲染成了一个看起来正常的结果。</b><br>
+  这就是为什么这条链路上每一处都要有 audit,而不是等着它报错 ——
+  它永远不会报错。</div>
+</section>
+
+<hr>
+
+<p class="foot">
+可执行版本:<code>flowgt-radar/pipeline.ipynb</code> —— 29 格,每个阶段一个 audit 格,
+拿你自己的真数据现场验证上面每一条。不花钱,不调用任何 AI。<br>
+数据来源:<code>flowgt-job-hunter/jobs.db</code>(155 行)· 生产 D1 · <code>audit-local/audit.json</code>
+</p>
+
+</div>
