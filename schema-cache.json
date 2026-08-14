@@ -1,0 +1,409 @@
+{
+ "master": [
+  {
+   "type": "index",
+   "name": "idx_bdeliv_acct",
+   "tbl_name": "broadcast_deliveries",
+   "sql": "CREATE INDEX idx_bdeliv_acct ON broadcast_deliveries(account_id, created_at DESC)"
+  },
+  {
+   "type": "index",
+   "name": "idx_bp_hash",
+   "tbl_name": "ai_blueprints",
+   "sql": "CREATE INDEX idx_bp_hash ON ai_blueprints(input_hash)"
+  },
+  {
+   "type": "index",
+   "name": "idx_click_acct",
+   "tbl_name": "job_clicks",
+   "sql": "CREATE INDEX idx_click_acct ON job_clicks(account_id, day)"
+  },
+  {
+   "type": "index",
+   "name": "idx_click_job",
+   "tbl_name": "job_clicks",
+   "sql": "CREATE INDEX idx_click_job  ON job_clicks(job_id)"
+  },
+  {
+   "type": "index",
+   "name": "idx_codes_email",
+   "tbl_name": "login_codes",
+   "sql": "CREATE INDEX idx_codes_email ON login_codes(email)"
+  },
+  {
+   "type": "index",
+   "name": "idx_conv_account",
+   "tbl_name": "conversations",
+   "sql": "CREATE INDEX idx_conv_account ON conversations(account_id, last_message_at)"
+  },
+  {
+   "type": "index",
+   "name": "idx_cv_acct",
+   "tbl_name": "cv_documents",
+   "sql": "CREATE INDEX idx_cv_acct ON cv_documents(account_id, version DESC)"
+  },
+  {
+   "type": "index",
+   "name": "idx_cvrev_cv",
+   "tbl_name": "cv_reviews",
+   "sql": "CREATE INDEX idx_cvrev_cv ON cv_reviews(cv_id, created_at DESC)"
+  },
+  {
+   "type": "index",
+   "name": "idx_daily_fam",
+   "tbl_name": "job_daily",
+   "sql": "CREATE INDEX idx_daily_fam ON job_daily(role_family, day)"
+  },
+  {
+   "type": "index",
+   "name": "idx_deliv_day",
+   "tbl_name": "job_deliveries",
+   "sql": "CREATE INDEX idx_deliv_day ON job_deliveries(day, slot)"
+  },
+  {
+   "type": "index",
+   "name": "idx_deliv_token",
+   "tbl_name": "job_deliveries",
+   "sql": "CREATE INDEX idx_deliv_token ON job_deliveries(click_token)"
+  },
+  {
+   "type": "index",
+   "name": "idx_ident_account",
+   "tbl_name": "identities",
+   "sql": "CREATE INDEX idx_ident_account ON identities(account_id)"
+  },
+  {
+   "type": "index",
+   "name": "idx_jobs_fam",
+   "tbl_name": "jobs",
+   "sql": "CREATE INDEX idx_jobs_fam   ON jobs(role_family, first_seen_day)"
+  },
+  {
+   "type": "index",
+   "name": "idx_jobs_first",
+   "tbl_name": "jobs",
+   "sql": "CREATE INDEX idx_jobs_first ON jobs(first_seen_day)"
+  },
+  {
+   "type": "index",
+   "name": "idx_jobs_open",
+   "tbl_name": "jobs",
+   "sql": "CREATE INDEX idx_jobs_open  ON jobs(is_open, last_seen_day)"
+  },
+  {
+   "type": "index",
+   "name": "idx_jr_employer",
+   "tbl_name": "job_requests",
+   "sql": "CREATE INDEX idx_jr_employer ON job_requests(employer_id)"
+  },
+  {
+   "type": "index",
+   "name": "idx_msg_conv",
+   "tbl_name": "messages",
+   "sql": "CREATE INDEX idx_msg_conv ON messages(conversation_id, created_at)"
+  },
+  {
+   "type": "index",
+   "name": "idx_outcome_acct",
+   "tbl_name": "outcomes",
+   "sql": "CREATE INDEX idx_outcome_acct ON outcomes(account_id, created_at)"
+  },
+  {
+   "type": "index",
+   "name": "idx_res_feed",
+   "tbl_name": "resources",
+   "sql": "CREATE INDEX idx_res_feed ON resources(kind, status, published_at DESC)"
+  },
+  {
+   "type": "index",
+   "name": "idx_revent_acct",
+   "tbl_name": "resource_events",
+   "sql": "CREATE INDEX idx_revent_acct ON resource_events(account_id, day)"
+  },
+  {
+   "type": "index",
+   "name": "idx_revent_res",
+   "tbl_name": "resource_events",
+   "sql": "CREATE INDEX idx_revent_res  ON resource_events(resource_id, event, day)"
+  },
+  {
+   "type": "index",
+   "name": "idx_runjobs_click",
+   "tbl_name": "digest_run_jobs",
+   "sql": "CREATE UNIQUE INDEX idx_runjobs_click ON digest_run_jobs(click_token)"
+  },
+  {
+   "type": "index",
+   "name": "idx_runjobs_rank",
+   "tbl_name": "digest_run_jobs",
+   "sql": "CREATE INDEX idx_runjobs_rank ON digest_run_jobs(run_id, rank)"
+  },
+  {
+   "type": "index",
+   "name": "idx_runs_account",
+   "tbl_name": "digest_runs",
+   "sql": "CREATE INDEX idx_runs_account ON digest_runs(account_id, started_at DESC)"
+  },
+  {
+   "type": "index",
+   "name": "idx_runs_day",
+   "tbl_name": "scrape_runs",
+   "sql": "CREATE INDEX idx_runs_day ON scrape_runs(day, source)"
+  },
+  {
+   "type": "index",
+   "name": "idx_sends_day",
+   "tbl_name": "job_sends",
+   "sql": "CREATE INDEX idx_sends_day ON job_sends(day, slot)"
+  },
+  {
+   "type": "index",
+   "name": "idx_sub_email",
+   "tbl_name": "job_subscriptions",
+   "sql": "CREATE INDEX idx_sub_email ON job_subscriptions(email_enabled, unsubbed_at)"
+  },
+  {
+   "type": "index",
+   "name": "idx_sub_token",
+   "tbl_name": "job_subscriptions",
+   "sql": "CREATE UNIQUE INDEX idx_sub_token ON job_subscriptions(unsub_token)"
+  },
+  {
+   "type": "index",
+   "name": "idx_tax",
+   "tbl_name": "role_taxonomy",
+   "sql": "CREATE INDEX idx_tax ON role_taxonomy(version, priority)"
+  },
+  {
+   "type": "index",
+   "name": "idx_usage",
+   "tbl_name": "usage_events",
+   "sql": "CREATE INDEX idx_usage ON usage_events(scope, event_type, day)"
+  },
+  {
+   "type": "table",
+   "name": "_cf_KV",
+   "tbl_name": "_cf_KV",
+   "sql": "CREATE TABLE _cf_KV (\n        key TEXT PRIMARY KEY,\n        value BLOB\n      ) WITHOUT ROWID"
+  },
+  {
+   "type": "table",
+   "name": "admin_audit",
+   "tbl_name": "admin_audit",
+   "sql": "CREATE TABLE \"admin_audit\" (\n  id          TEXT PRIMARY KEY,\n  actor_id    TEXT,\n  actor_email TEXT,\n  target_id   TEXT NOT NULL,\n  target_email TEXT,\n  action      TEXT NOT NULL\n              CHECK (action IN ('plan_change','role_change','expiry_change','auto_downgrade',\n                                'cv_download','cv_review','forced_send','broadcast',\n                                'consent_change')),\n  before_json TEXT CHECK (before_json IS NULL OR json_valid(before_json)),\n  after_json  TEXT CHECK (after_json  IS NULL OR json_valid(after_json)),\n  note        TEXT,\n  created_at  INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "ai_blueprints",
+   "tbl_name": "ai_blueprints",
+   "sql": "CREATE TABLE \"ai_blueprints\" (\n  id          TEXT PRIMARY KEY,\n  input_hash  TEXT NOT NULL,\n  mode        TEXT CHECK (mode IS NULL OR mode IN ('hire','cv')),\n  employer_id TEXT REFERENCES employers(id) ON DELETE SET NULL,\n  result_json TEXT NOT NULL CHECK (json_valid(result_json)),\n  created_at  INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "broadcast_deliveries",
+   "tbl_name": "broadcast_deliveries",
+   "sql": "CREATE TABLE broadcast_deliveries (broadcast_id TEXT NOT NULL REFERENCES broadcasts(id) ON DELETE CASCADE, account_id TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE, email TEXT NOT NULL, ok INTEGER NOT NULL DEFAULT 0 CHECK (ok IN (0,1)), error TEXT, created_at INTEGER NOT NULL CHECK (created_at>0), PRIMARY KEY (broadcast_id, account_id))"
+  },
+  {
+   "type": "table",
+   "name": "broadcasts",
+   "tbl_name": "broadcasts",
+   "sql": "CREATE TABLE broadcasts (id TEXT PRIMARY KEY, actor_id TEXT, actor_email TEXT NOT NULL, audience TEXT NOT NULL CHECK (audience IN ('all','solo','runway')), kind TEXT NOT NULL CHECK (kind IN ('service','promotional')), subject TEXT NOT NULL CHECK (length(trim(subject))>0), body TEXT NOT NULL CHECK (length(trim(body))>0), attachments TEXT, created_at INTEGER NOT NULL CHECK (created_at>0), attach_name   TEXT, attach_type   TEXT, attach_bytes  INTEGER, attach_sha256 TEXT, sent_count INTEGER NOT NULL DEFAULT 0, skipped_count INTEGER NOT NULL DEFAULT 0, failed_count INTEGER NOT NULL DEFAULT 0)"
+  },
+  {
+   "type": "table",
+   "name": "conversations",
+   "tbl_name": "conversations",
+   "sql": "CREATE TABLE conversations (\n  id              TEXT PRIMARY KEY,\n  account_id      TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  token           TEXT NOT NULL UNIQUE,     -- 出现在 Reply-To 里，不可猜\n  subject         TEXT,\n  status          TEXT NOT NULL DEFAULT 'open'\n                  CHECK (status IN ('open','waiting','closed')),\n  last_message_at INTEGER,\n  created_at      INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "cv_documents",
+   "tbl_name": "cv_documents",
+   "sql": "CREATE TABLE cv_documents (\n  id           TEXT PRIMARY KEY,\n  account_id   TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n\n  -- Per-account version, starting at 1. The member's timeline of their own CV.\n  -- 每人从 1 递增。这就是「不同 CV 时间戳和版本」的版本。\n  version      INTEGER NOT NULL CHECK (version > 0),\n\n  filename     TEXT,\n  note         TEXT,                    -- member's own label, e.g. \"for data roles\"\n\n  -- sha256 of the PLAINTEXT. Same content resubmitted = same version returned,\n  -- not a new one — a version list full of identical entries answers nothing.\n  -- 明文的 sha256。同样的内容再交一次返回原版本，不新开 —— 全是重复的版本列表回答不了任何问题。\n  sha256       TEXT NOT NULL,\n  size_bytes   INTEGER NOT NULL CHECK (size_bytes > 0),\n\n  -- AES-256-GCM. iv is per-row random 12 bytes; both base64.\n  iv           TEXT NOT NULL CHECK (length(iv) > 0),\n  ciphertext   TEXT NOT NULL CHECK (length(ciphertext) > 0),\n\n  -- Consent recorded VERBATIM at upload, same pattern as job_subscriptions:\n  -- it names AI review (DeepSeek, servers in China) and the redaction step.\n  -- A year later \"what exactly did they agree to\" must be answerable.\n  -- 同意原话逐字存档，和邮件订阅同一个模式 —— 一年后要能回答「他同意的到底是什么」。\n  consent_text TEXT NOT NULL,\n  consent_at   INTEGER NOT NULL CHECK (consent_at > 0),\n\n  created_at   INTEGER NOT NULL CHECK (created_at > 0),\n  UNIQUE (account_id, version),\n  UNIQUE (account_id, sha256)\n)"
+  },
+  {
+   "type": "table",
+   "name": "cv_reviews",
+   "tbl_name": "cv_reviews",
+   "sql": "CREATE TABLE cv_reviews (\n  id                 TEXT PRIMARY KEY,\n  cv_id              TEXT NOT NULL REFERENCES cv_documents(id) ON DELETE CASCADE,\n  account_id         TEXT NOT NULL,     -- denormalised for the admin list\n  model              TEXT NOT NULL,\n  rubric_version     INTEGER NOT NULL,\n  status             TEXT NOT NULL CHECK (status IN ('done','failed')),\n\n  -- The verdict is ADMIN-FACING ONLY. Red line 5: nothing AI writes reaches a\n  -- member before Gabriel has read it. The member API never selects this column.\n  -- 结论只给管理员看。红线 5：AI 写的任何东西，过了 Gabriel 的眼才会到会员那里。\n  verdict_json       TEXT CHECK (verdict_json IS NULL OR json_valid(verdict_json)),\n\n  prompt_tokens      INTEGER,\n  completion_tokens  INTEGER,\n  cache_hit_tokens   INTEGER,           -- prefix-cache hits — the number to watch\n  cache_miss_tokens  INTEGER,\n  -- Integer micro-CNY. Price-per-1M-tokens in CNY happens to equal µCNY per\n  -- token, so cost = Σ tokens × price, all integers, no float drift.\n  -- 每百万 token 的人民币价恰好等于每 token 的微元 —— 全整数，无浮点误差。\n  cost_ucny          INTEGER,\n  latency_ms         INTEGER,\n  redactions         INTEGER,           -- how many emails/phones/links were stripped\n  error              TEXT,\n  created_at         INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "cv_rubric",
+   "tbl_name": "cv_rubric",
+   "sql": "CREATE TABLE cv_rubric (\n  version    INTEGER PRIMARY KEY CHECK (version > 0),\n  content    TEXT NOT NULL CHECK (length(content) > 100),\n  created_at INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "digest_run_jobs",
+   "tbl_name": "digest_run_jobs",
+   "sql": "CREATE TABLE digest_run_jobs (\n  run_id       TEXT NOT NULL REFERENCES digest_runs(id) ON DELETE CASCADE,\n  job_id       TEXT NOT NULL,\n  -- 邮件里的名次。续页从第 51 名开始，顺序和邮件完全一致 ——\n  -- 它是那封信的下半页，不是第二个搜索界面。\n  -- The rank inside that email. The continuation starts at #51 in the same\n  -- order: it is the second half of that message, not a second search surface.\n  rank         INTEGER NOT NULL,\n  bucket       TEXT NOT NULL CHECK (bucket IN ('local','matched')),\n  -- 这张表【只存放不下的那些】。进了信的岗位已经在 job_deliveries 里，\n  -- 连同它自己的 click_token —— 再抄一份就是两个都可能变成对方的反例。\n  -- Only the roles that did not fit. The ones that did are already in\n  -- job_deliveries with their own click_token; a second copy would just be two\n  -- records able to contradict each other.\n  score        REAL,\n  matched      TEXT,          -- 命中的技能，JSON 数组\n  -- 续页里的岗位没有 job_deliveries 行（它们没被投递过），所以点击要走自己的\n  -- token。刻意【不】给它们写 job_deliveries：那张表的主键 (account_id, job_id)\n  -- 意思是「这个岗位对这个人永久去重」，写进去等于让他此后再也收不到这些岗位的邮件。\n  -- Remainder roles have no job_deliveries row, so clicks need their own token.\n  -- Deliberately NOT writing job_deliveries for them: that table's primary key\n  -- means \"permanently deduplicated for this person\", so writing it here would\n  -- guarantee these roles never reach them by email at all.\n  click_token  TEXT UNIQUE,\n  title_raw    TEXT NOT NULL,\n  company      TEXT,\n  location_raw TEXT,\n  region       TEXT,\n  url          TEXT,\n  posted_at    INTEGER,\n  PRIMARY KEY (run_id, job_id)\n)"
+  },
+  {
+   "type": "table",
+   "name": "digest_runs",
+   "tbl_name": "digest_runs",
+   "sql": "CREATE TABLE digest_runs (\n  -- 不可猜的 id：它会出现在会员的 URL 里（/my-jobs.html?run=…），\n  -- 所以必须是随机的，不能是「账号+日期+档」拼出来的。\n  -- Opaque because it appears in a member-visible URL; never derived from\n  -- account + day + slot, which anyone could construct for anyone else.\n  id            TEXT PRIMARY KEY,\n  account_id    TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  day           TEXT NOT NULL CHECK (day GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),\n  slot          TEXT NOT NULL CHECK (slot IN ('morning','afternoon')),\n\n  -- 定时的还是手动补发的。分开记是因为【手动发过一次】不能算作\n  -- 「定时任务今天跑过了」的证据 —— 那正好会掩盖 cron 已经挂了这件事。\n  -- A manual send must never stand as evidence that cron ran; that is precisely\n  -- the confusion that would hide a dead scheduler.\n  trigger_kind  TEXT NOT NULL CHECK (trigger_kind IN ('scheduled','manual')),\n\n  -- 四种结局，互不塌陷：\n  --   running  开始了还没落定（Worker 中途被回收时会停在这里，这是【诚实】的）\n  --   sent     信发出去了\n  --   quiet    检查正常完成，当时没有符合条件的新岗位 —— 这【不是】失败\n  --   failed   准备或投递失败，我们不知道他收到了什么\n  -- Four outcomes that cannot collapse into one another. `running` is what a\n  -- killed Worker leaves behind, and leaving it visible is the honest answer.\n  outcome       TEXT NOT NULL CHECK (outcome IN ('running','sent','quiet','failed')),\n  failure_stage TEXT,          -- 'prepare' | 'deliver'\n  message       TEXT,          -- 失败原因，给人看的一句话\n\n  -- ── 计数是【发信当时的快照】，不是打开页面时重算的 ──────────────────────\n  --\n  -- 重算会让页面自相矛盾：邮件里写着 50 个，三小时后打开页面池子变了，\n  -- 「未包含 7 个」变成「未包含 21 个」，而那 7 个才是他当时真正错过的。\n  -- 快照是唯一能让邮件和页面永远说同一句话的做法。\n  --\n  -- Counts are the send-time snapshot, never recomputed when the page opens.\n  -- Recomputing makes the page contradict the email: the message said 50, the\n  -- pool moved on, and \"7 not included\" silently becomes \"21\" — when 7 is what\n  -- they actually missed. The snapshot is the only way the two can keep saying\n  -- the same thing.\n  --\n  -- 全部可空，且【失败时必须是 NULL 而不是 0】。\n  -- 0 是一个断言（「一个都没有」），失败时我们没有资格做这个断言。\n  -- All nullable, and a FAILURE MUST WRITE NULL, NEVER 0. Zero is a claim that\n  -- there were none; after a failure we are not entitled to make that claim.\n  cap_per_bucket   INTEGER,\n  n_available      INTEGER, n_shown      INTEGER, n_remainder      INTEGER,\n  near_available   INTEGER, near_shown   INTEGER, near_remainder   INTEGER,\n  else_available   INTEGER, else_shown   INTEGER, else_remainder   INTEGER,\n  -- 池子查询有 LIMIT 400。真到顶了就把这件事记下来 ——\n  -- 悄悄截断会让 n_available 少报，而少报看起来和「市场安静」一模一样。\n  -- The pool query has LIMIT 400. If it ever binds, say so: a silent truncation\n  -- understates n_available, and understating looks exactly like a quiet market.\n  pool_truncated   INTEGER NOT NULL DEFAULT 0 CHECK (pool_truncated IN (0,1)),\n\n  started_at    INTEGER NOT NULL CHECK (started_at > 0),\n  completed_at  INTEGER\n)"
+  },
+  {
+   "type": "table",
+   "name": "employers",
+   "tbl_name": "employers",
+   "sql": "CREATE TABLE \"employers\" (\n  id         TEXT PRIMARY KEY,\n  email      TEXT UNIQUE NOT NULL COLLATE NOCASE CHECK (length(email) > 0),\n  name       TEXT,\n  company    TEXT,\n  title      TEXT,\n  phone      TEXT,\n  tier       TEXT NOT NULL DEFAULT 'verified'\n             CHECK (tier IN ('lead', 'verified', 'enterprise')),\n  created_at INTEGER NOT NULL CHECK (created_at > 0)\n, role TEXT NOT NULL DEFAULT 'user', plan TEXT NOT NULL DEFAULT 'free', plan_expires_at INTEGER, plan_note TEXT, lang TEXT\n  CHECK (lang IS NULL OR lang IN ('en','zh','ja','ko','es','hi')))"
+  },
+  {
+   "type": "table",
+   "name": "identities",
+   "tbl_name": "identities",
+   "sql": "CREATE TABLE \"identities\" (\n  id             TEXT PRIMARY KEY,\n  account_id     TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  provider       TEXT NOT NULL CHECK (provider IN ('email', 'google')),\n  provider_uid   TEXT NOT NULL CHECK (length(provider_uid) > 0),\n  email          TEXT,\n  email_verified INTEGER NOT NULL DEFAULT 0 CHECK (email_verified IN (0, 1)),\n  name           TEXT,\n  avatar_url     TEXT,\n  created_at     INTEGER NOT NULL CHECK (created_at > 0),\n  last_login_at  INTEGER,\n  UNIQUE (provider, provider_uid),\n  UNIQUE (account_id, provider)\n)"
+  },
+  {
+   "type": "table",
+   "name": "job_clicks",
+   "tbl_name": "job_clicks",
+   "sql": "CREATE TABLE job_clicks (\n  id          TEXT PRIMARY KEY,\n  account_id  TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  job_id      TEXT NOT NULL,\n  day         TEXT NOT NULL,\n  ua_hash     TEXT,                    -- 只存哈希，用于区分「同一次点击的重复请求」\n  created_at  INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "job_daily",
+   "tbl_name": "job_daily",
+   "sql": "CREATE TABLE job_daily (\n  day            TEXT NOT NULL CHECK (day GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),\n  role_family    TEXT NOT NULL DEFAULT 'unknown',\n  seniority      TEXT NOT NULL DEFAULT 'unknown',\n  region         TEXT NOT NULL DEFAULT 'unknown',\n\n  new_count      INTEGER NOT NULL DEFAULT 0,  -- 当天【首次出现】的岗位数\n  open_count     INTEGER NOT NULL DEFAULT 0,  -- 当天【在挂】的岗位数\n  closed_count   INTEGER NOT NULL DEFAULT 0,  -- 当天【最后一次出现】的岗位数\n\n  -- 薪资分位数。salary_n 是有薪资的样本量 —— 报表里必须一起显示，\n  -- 3 个样本算出来的中位数和 300 个的不是一回事。\n  salary_n       INTEGER NOT NULL DEFAULT 0,\n  salary_p25     INTEGER,\n  salary_p50     INTEGER,\n  salary_p75     INTEGER,\n\n  computed_at    INTEGER NOT NULL CHECK (computed_at > 0),\n  PRIMARY KEY (day, role_family, seniority, region)\n)"
+  },
+  {
+   "type": "table",
+   "name": "job_deliveries",
+   "tbl_name": "job_deliveries",
+   "sql": "CREATE TABLE job_deliveries (\n  account_id  TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  job_id      TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,\n  day         TEXT NOT NULL,\n  slot        TEXT NOT NULL CHECK (slot IN ('morning','afternoon','portal')),\n  bucket      TEXT NOT NULL CHECK (bucket IN ('local','matched','recent')),\n  score       REAL,                    -- 匹配分：用来解释「为什么推给他」\n  matched     TEXT,                    -- 命中的关键词，JSON 数组。邮件里要显示出来\n  created_at  INTEGER NOT NULL CHECK (created_at > 0), click_token TEXT,\n  PRIMARY KEY (account_id, job_id)\n)"
+  },
+  {
+   "type": "table",
+   "name": "job_requests",
+   "tbl_name": "job_requests",
+   "sql": "CREATE TABLE \"job_requests\" (\n  id             TEXT PRIMARY KEY,\n  employer_id    TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  jd             TEXT NOT NULL CHECK (length(jd) > 0),\n  blueprint_json TEXT CHECK (blueprint_json IS NULL OR json_valid(blueprint_json)),\n  want_call      INTEGER DEFAULT 0 CHECK (want_call IN (0, 1)),\n  status         TEXT DEFAULT 'new' CHECK (status IN ('new','contacted','shortlisted','closed')),\n  kind           TEXT DEFAULT 'jd' CHECK (kind IN ('jd','cv')),\n  via            TEXT DEFAULT 'anon' CHECK (via IN ('session','anon')),\n  created_at     INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "job_sends",
+   "tbl_name": "job_sends",
+   "sql": "CREATE TABLE job_sends (\n  id           TEXT PRIMARY KEY,\n  account_id   TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  email        TEXT NOT NULL,          -- 冗余：账号删了台账还看得懂\n  day          TEXT NOT NULL CHECK (day GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),\n  slot         TEXT NOT NULL CHECK (slot IN ('morning','afternoon')),\n  job_count    INTEGER NOT NULL DEFAULT 0,\n  ok           INTEGER NOT NULL DEFAULT 0 CHECK (ok IN (0,1)),\n  error        TEXT,\n  created_at   INTEGER NOT NULL CHECK (created_at > 0),\n  UNIQUE (account_id, day, slot)        -- 同一天同一时段只发一次\n)"
+  },
+  {
+   "type": "table",
+   "name": "job_subscriptions",
+   "tbl_name": "job_subscriptions",
+   "sql": "CREATE TABLE job_subscriptions (\n  account_id       TEXT PRIMARY KEY REFERENCES employers(id) ON DELETE CASCADE,\n\n  -- 两个独立的开关。\n  -- portal 默认【开】：在自己的门户里看，不打扰任何人，也不受 UEMA 管。\n  -- email  默认【关】：发信是主动打扰，必须由他自己明确打开（opt-in）。\n  --   这不只是守法，也是对的做法 —— 默认发信换来的订阅数是虚的。\n  email_enabled    INTEGER NOT NULL DEFAULT 0 CHECK (email_enabled IN (0,1)),\n  portal_enabled   INTEGER NOT NULL DEFAULT 1 CHECK (portal_enabled IN (0,1)),\n\n  -- 筛选偏好。NULL = 全部。存 JSON 数组，例 '[\"data\",\"backend\"]'\n  role_families    TEXT CHECK (role_families IS NULL OR json_valid(role_families)),\n  regions          TEXT CHECK (regions       IS NULL OR json_valid(regions)),\n  seniorities      TEXT CHECK (seniorities   IS NULL OR json_valid(seniorities)),\n\n  -- ── 同意证据（UEMA s 9(3)）──────────────────────────────────────────────\n  consent_at       INTEGER,   -- 打开邮件推送的那一刻\n  consent_ip_hash  TEXT,      -- 和别处一样只存哈希\n  consent_source   TEXT CHECK (consent_source IS NULL OR\n                     consent_source IN ('portal_toggle','signup','admin','import')),\n  consent_text     TEXT,      -- 他当时屏幕上那句话，逐字。这是唯一能回答\n                              -- 「他同意的到底是什么」的东西\n\n  -- ── 退订 ────────────────────────────────────────────────────────────────\n  -- token 放在邮件链接里，点一下就退，不需要登录也不需要输邮箱。\n  -- 让人为了退订先登录，本身就是 UEMA 说的「不合理的困难」。\n  unsub_token      TEXT NOT NULL UNIQUE CHECK (length(unsub_token) >= 20),\n  unsubbed_at      INTEGER,   -- 非空 = 已退订。粘性的：再打开需要一次全新的同意\n  unsub_source     TEXT,\n\n  created_at       INTEGER NOT NULL CHECK (created_at > 0),\n  updated_at       INTEGER NOT NULL CHECK (updated_at > 0)\n, stack TEXT, home_region TEXT, digest_slots TEXT)"
+  },
+  {
+   "type": "table",
+   "name": "jobs",
+   "tbl_name": "jobs",
+   "sql": "CREATE TABLE jobs (\n  id             TEXT PRIMARY KEY,\n  source         TEXT NOT NULL CHECK (source IN ('seek','indeed','other')),\n  external_id    TEXT NOT NULL,              -- 来源站自己的 job id，用来去重\n  url            TEXT,\n\n  -- 原始字段：永远保留，归一规则改了可以拿它重跑（坑 1 的后悔药）\n  title_raw      TEXT NOT NULL CHECK (length(title_raw) > 0),\n  company        TEXT,\n  location_raw   TEXT,\n\n  -- 归一字段：入库时算好。全部可空 —— 归一不出来就是不出来，\n  -- 宁可留空让它在报表里显示成「未分类」，也不要硬塞进错的桶。\n  role_family    TEXT,     -- 'backend' 'frontend' 'fullstack' 'data' 'devops' 'ai' 'qa' 'pm' …\n  seniority      TEXT CHECK (seniority IS NULL OR seniority IN ('junior','mid','senior','lead','principal')),\n  region         TEXT,     -- 'auckland' 'wellington' 'christchurch' 'other-nz' 'remote-nz'\n  work_mode      TEXT CHECK (work_mode IS NULL OR work_mode IN ('onsite','hybrid','remote')),\n  taxonomy_ver   INTEGER NOT NULL DEFAULT 1, -- 用哪一版规则归的；重跑时按这个筛\n\n  -- 薪资：能解析出来才填。NZ 的岗位大多不写，所以这几列大部分是空的 ——\n  -- 报表里必须同时给出「有薪资样本量」，否则中位数会骗人。\n  salary_min     INTEGER,\n  salary_max     INTEGER,\n  salary_period  TEXT CHECK (salary_period IS NULL OR salary_period IN ('year','hour','day')),\n\n  -- 区间（坑 2）\n  first_seen_day TEXT NOT NULL CHECK (first_seen_day GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),\n  last_seen_day  TEXT NOT NULL CHECK (last_seen_day  GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),\n  is_open        INTEGER NOT NULL DEFAULT 1 CHECK (is_open IN (0,1)),\n  posted_at      INTEGER,                    -- 来源站声称的发布时间，常常没有\n\n  created_at     INTEGER NOT NULL CHECK (created_at > 0),\n  updated_at     INTEGER NOT NULL CHECK (updated_at > 0), role_group TEXT,\n  UNIQUE (source, external_id)                -- 同一个岗位重复抓到只更新 last_seen\n)"
+  },
+  {
+   "type": "table",
+   "name": "login_codes",
+   "tbl_name": "login_codes",
+   "sql": "CREATE TABLE \"login_codes\" (\n  id         TEXT PRIMARY KEY,\n  email      TEXT NOT NULL COLLATE NOCASE CHECK (length(email) > 0),\n  code_hash  TEXT NOT NULL CHECK (length(code_hash) = 64),\n  expires_at INTEGER NOT NULL,\n  attempts   INTEGER DEFAULT 0 CHECK (attempts >= 0),\n  created_at INTEGER NOT NULL CHECK (created_at > 0),\n  CHECK (expires_at > created_at)\n)"
+  },
+  {
+   "type": "table",
+   "name": "messages",
+   "tbl_name": "messages",
+   "sql": "CREATE TABLE messages (\n  id              TEXT PRIMARY KEY,\n  conversation_id TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,\n  direction       TEXT NOT NULL CHECK (direction IN ('out','in')),\n  from_addr       TEXT,\n  to_addr         TEXT,\n  subject         TEXT,\n  body            TEXT,\n  -- AI 只做第一档：读懂、分类、摘要。起草和发送都是人的事。\n  ai_intent       TEXT,\n  ai_summary      TEXT,\n  created_at      INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "oauth_states",
+   "tbl_name": "oauth_states",
+   "sql": "CREATE TABLE oauth_states (\n  state      TEXT PRIMARY KEY,\n  nonce      TEXT NOT NULL,\n  next_path  TEXT,\n  expires_at INTEGER NOT NULL,\n  created_at INTEGER NOT NULL\n)"
+  },
+  {
+   "type": "table",
+   "name": "outcomes",
+   "tbl_name": "outcomes",
+   "sql": "CREATE TABLE outcomes (\n  id          TEXT PRIMARY KEY,\n  account_id  TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  job_id      TEXT,                    -- 可空：他可能是从别处拿到的面试\n  kind        TEXT NOT NULL CHECK (kind IN ('applied','interview','offer','accepted','rejected')),\n  note        TEXT,\n  happened_on TEXT,\n  created_at  INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "resource_events",
+   "tbl_name": "resource_events",
+   "sql": "CREATE TABLE resource_events (\n  id          TEXT PRIMARY KEY,\n  account_id  TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  resource_id TEXT REFERENCES resources(id) ON DELETE CASCADE,\n  kind        TEXT NOT NULL,\n  event       TEXT NOT NULL CHECK (event IN ('view','open')),\n  day         TEXT NOT NULL,\n  created_at  INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "resource_saves",
+   "tbl_name": "resource_saves",
+   "sql": "CREATE TABLE resource_saves (\n  account_id  TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  resource_id TEXT NOT NULL REFERENCES resources(id) ON DELETE CASCADE,\n  created_at  INTEGER NOT NULL CHECK (created_at > 0),\n  PRIMARY KEY (account_id, resource_id)\n)"
+  },
+  {
+   "type": "table",
+   "name": "resource_seen",
+   "tbl_name": "resource_seen",
+   "sql": "CREATE TABLE \"resource_seen\" (\n  account_id  TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  kind        TEXT NOT NULL CHECK (kind IN ('weekly','news','podcast')),\n  seen_at     INTEGER NOT NULL CHECK (seen_at > 0),\n  PRIMARY KEY (account_id, kind)\n)"
+  },
+  {
+   "type": "table",
+   "name": "resources",
+   "tbl_name": "resources",
+   "sql": "CREATE TABLE resources (\n  id           TEXT PRIMARY KEY,\n  kind         TEXT NOT NULL CHECK (kind IN ('weekly','news','podcast')),\n  slug         TEXT NOT NULL UNIQUE CHECK (length(slug) > 0),\n  title_i18n   TEXT NOT NULL CHECK (json_valid(title_i18n)\n                                    AND json_extract(title_i18n, '$.en') IS NOT NULL),\n  summary_i18n TEXT CHECK (summary_i18n IS NULL OR json_valid(summary_i18n)),\n  url          TEXT,\n  source       TEXT,\n\n  -- 'solo' means everyone signed in. In code, read this as `!== 'solo'`, never\n  -- as `=== 'runway'` — otherwise a future third tier becomes world-readable\n  -- because nobody remembered to update one line.\n  -- 代码里判定写「不等于 solo」而不是「等于 runway」——\n  -- 否则以后加第三档时，会因为没人改那一行而默认全公开。\n  min_plan     TEXT NOT NULL DEFAULT 'solo' CHECK (min_plan IN ('solo','runway')),\n\n  status       TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('draft','published')),\n  published_at INTEGER NOT NULL CHECK (published_at > 0),\n  created_at   INTEGER NOT NULL CHECK (created_at > 0),\n  updated_at   INTEGER NOT NULL CHECK (updated_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "role_taxonomy",
+   "tbl_name": "role_taxonomy",
+   "sql": "CREATE TABLE role_taxonomy (\n  id          TEXT PRIMARY KEY,\n  version     INTEGER NOT NULL DEFAULT 1,\n  pattern     TEXT NOT NULL,              -- 例：'%data engineer%'\n  role_family TEXT,\n  seniority   TEXT,\n  priority    INTEGER NOT NULL DEFAULT 100,\n  note        TEXT,\n  created_at  INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  },
+  {
+   "type": "table",
+   "name": "scrape_runs",
+   "tbl_name": "scrape_runs",
+   "sql": "CREATE TABLE scrape_runs (\n  id           TEXT PRIMARY KEY,\n  source       TEXT NOT NULL,\n  started_at   INTEGER NOT NULL,\n  finished_at  INTEGER,\n  day          TEXT NOT NULL,\n  seen_count   INTEGER NOT NULL DEFAULT 0,   -- 本次看到的岗位总数\n  new_count    INTEGER NOT NULL DEFAULT 0,\n  ok           INTEGER NOT NULL DEFAULT 0 CHECK (ok IN (0,1)),\n  error        TEXT\n)"
+  },
+  {
+   "type": "table",
+   "name": "sessions",
+   "tbl_name": "sessions",
+   "sql": "CREATE TABLE \"sessions\" (\n  token       TEXT PRIMARY KEY,\n  employer_id TEXT NOT NULL REFERENCES employers(id) ON DELETE CASCADE,\n  expires_at  INTEGER NOT NULL,\n  created_at  INTEGER NOT NULL CHECK (created_at > 0),\n  CHECK (expires_at > created_at)\n)"
+  },
+  {
+   "type": "table",
+   "name": "usage_events",
+   "tbl_name": "usage_events",
+   "sql": "CREATE TABLE \"usage_events\" (\n  id          TEXT PRIMARY KEY,\n  scope       TEXT NOT NULL CHECK (length(scope) > 0),\n  employer_id TEXT REFERENCES employers(id) ON DELETE SET NULL,\n  ip_hash     TEXT,\n  event_type  TEXT NOT NULL CHECK (event_type IN ('analyze','contact')),\n  day         TEXT NOT NULL CHECK (day GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),\n  created_at  INTEGER NOT NULL CHECK (created_at > 0)\n)"
+  }
+ ],
+ "counts": {
+  "admin_audit": 40,
+  "ai_blueprints": 1,
+  "broadcast_deliveries": 0,
+  "broadcasts": 0,
+  "conversations": 17,
+  "cv_documents": 4,
+  "cv_reviews": 0,
+  "cv_rubric": 1,
+  "digest_run_jobs": 1556,
+  "digest_runs": 93,
+  "employers": 19,
+  "identities": 20,
+  "job_clicks": 175,
+  "job_daily": 213,
+  "job_deliveries": 2982,
+  "job_requests": 2,
+  "job_sends": 140,
+  "job_subscriptions": 19,
+  "jobs": 436,
+  "login_codes": 0,
+  "messages": 174,
+  "oauth_states": 2,
+  "outcomes": 0,
+  "resource_events": 36,
+  "resource_saves": 0,
+  "resource_seen": 8,
+  "resources": 4,
+  "role_taxonomy": 37,
+  "scrape_runs": 71,
+  "sessions": 22,
+  "usage_events": 2
+ }
+}
