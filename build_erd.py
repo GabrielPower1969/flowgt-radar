@@ -15,6 +15,20 @@ import schema_model
 HERE = pathlib.Path(__file__).resolve().parent
 SITE = HERE.parent / 'flowgt-website'
 
+# ── 产物写到哪 / where the artefact goes ──────────────────────────────────────
+#
+# 生成器留在这个仓库（它要读 ../flowgt-website 的 schema 和 migrations），
+# 产物写到 flowgt-workspace/05-architecture/ —— 那是【回顾用的东西】的唯一入口。
+#
+# 不在两边各留一份：CLAUDE.md 第七节写着「每样东西只有一个家，没有一句话说
+# 两遍 —— 那才是能找到的原因」。两份 HTML 迟早有一份先旧，而旧的那份不会报错。
+#
+# The generator stays here, where its inputs are; the artefact goes to the one
+# place meant for reviewing. Not both: two copies means one of them goes stale
+# first, and the stale one does not raise.
+ARCH = HERE.parent / 'flowgt-workspace' / '05-architecture'
+
+
 M = schema_model.build()
 TABLES, DOMAINS, INDEXES = M['tables'], M['domains'], M['indexes']
 
@@ -224,8 +238,8 @@ def build_html():
     A('<meta name="color-scheme" content="light dark">')
     A('<title>FlowGT 数据库全景 · ERD / schema / ETL</title>')
     A('<style>')
-    A((HERE / 'pipeline.html').read_text(encoding='utf-8')
-      .split('<style>')[1].split('</style>')[0])
+    # 令牌从 tokens.css 读，不再从另一个 HTML 文件里抠 —— 见 tokens.css 顶部。
+    A((HERE / 'tokens.css').read_text(encoding='utf-8'))
     A('''
   /* ── ERD 专用 ── */
   .mm{background:var(--card);border:1px solid var(--line);border-radius:13px;
@@ -387,7 +401,8 @@ mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'default',
 
 
 if __name__ == '__main__':
-    out = HERE / 'erd.html'
+    ARCH.mkdir(parents=True, exist_ok=True)
+    out = ARCH / 'erd.html'
     out.write_text(build_html(), encoding='utf-8')
     print(f'  ✓ {out.name}  {out.stat().st_size:,} 字节')
     print(f'    {len(TABLES)} 张表 · {len(DOMAINS)} 个域 · {len(PRINCIPLES)} 条原则'

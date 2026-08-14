@@ -12,3 +12,9 @@ __pycache__/
 # 实验产物
 out/
 cache/
+
+# 产物写到 flowgt-workspace/05-architecture/ —— 见 build_erd.py 的注释。
+# 这里只留生成器，不留产物：两份 HTML 迟早有一份先旧。
+erd.html
+pipeline.html
+etl.html

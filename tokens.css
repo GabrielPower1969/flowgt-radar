@@ -1,0 +1,111 @@
+/* FlowGT 文档的设计令牌 —— 唯一事实源。
+ *
+ * 这些值原来内联在 pipeline.html 里，而 build_erd.py 去【读那个 HTML 文件】
+ * 把 <style> 段抠出来复用。2026-08-15 把架构文档搬进 05-architecture/ 之后，
+ * 那一读立刻 FileNotFoundError —— 好在它大声报了错，不是静默的。
+ *
+ * 修法不是把路径改回去，是把这个耦合去掉：令牌住在这里，生成器在生成时把它
+ * 内联进产物。产物因此仍然是自包含的（离线、双击、当附件都能看），
+ * 而调色板只有一处。
+ *
+ * The tokens used to be inline in pipeline.html, which build_erd.py read to
+ * scrape its <style> block. Moving the docs broke that read — loudly, which is
+ * the good kind. The fix removes the coupling rather than repointing it: the
+ * tokens live here and are inlined at build time, so outputs stay
+ * self-contained while the palette exists once.
+ */
+
+  :root{
+    --ink:#0C1A14; --ink-2:#3A4A43; --muted:#67756D;
+    --bg:#FBFCFB; --card:#FFFFFF; --soft:#F4F7F5; --line:#E2E8E5;
+    --accent:#00694B; --accent-bg:#EAF4F0; --signal:#00C26D;
+    --warn:#8A5A00; --warn-bg:#FDF6E8; --danger:#A3261C; --danger-bg:#FDF0EE;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Noto Sans SC",Roboto,sans-serif;
+    --shadow:0 1px 2px rgba(12,26,20,.04),0 10px 28px -16px rgba(12,26,20,.16);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --ink:#EDF2EF; --ink-2:#C4D0CA; --muted:#94A49C;
+    --bg:#0B100E; --card:#131A17; --soft:#18211D; --line:#26312C;
+    --accent:#5BC79E; --accent-bg:#16241E;
+    --warn:#E0AC5A; --warn-bg:#241C0E; --danger:#FF9B8F; --danger-bg:#2A1512;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -16px rgba(0,0,0,.7);
+  }}
+  :root[data-theme="dark"]{
+    --ink:#EDF2EF; --ink-2:#C4D0CA; --muted:#94A49C;
+    --bg:#0B100E; --card:#131A17; --soft:#18211D; --line:#26312C;
+    --accent:#5BC79E; --accent-bg:#16241E;
+    --warn:#E0AC5A; --warn-bg:#241C0E; --danger:#FF9B8F; --danger-bg:#2A1512;
+  }
+  :root[data-theme="light"]{
+    --ink:#0C1A14; --ink-2:#3A4A43; --muted:#67756D;
+    --bg:#FBFCFB; --card:#FFFFFF; --soft:#F4F7F5; --line:#E2E8E5;
+    --accent:#00694B; --accent-bg:#EAF4F0;
+    --warn:#8A5A00; --warn-bg:#FDF6E8; --danger:#A3261C; --danger-bg:#FDF0EE;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--body);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:52px 20px 96px;display:flex;flex-direction:column;gap:44px}
+  h1,h2,h3{margin:0;letter-spacing:-.02em;text-wrap:balance}
+  h1{font-size:clamp(28px,5.5vw,40px);line-height:1.12}
+  h2{font-size:clamp(20px,3.6vw,25px);line-height:1.3}
+  h3{font-size:16px;line-height:1.35}
+  p{margin:0}
+  .eyebrow{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .lede{color:var(--muted);font-size:17px;max-width:60ch}
+  section{display:flex;flex-direction:column;gap:16px}
+  hr{border:0;border-top:1px solid var(--line);margin:0}
+  code{font-family:var(--mono);font-size:.86em;background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+  .note{border-left:3px solid var(--signal);background:var(--soft);padding:13px 16px;border-radius:0 10px 10px 0;color:var(--ink-2);font-size:15px}
+  .warn{border-left:3px solid var(--warn);background:var(--warn-bg);padding:13px 16px;border-radius:0 10px 10px 0;color:var(--ink-2);font-size:15px}
+
+  /* ── 管线 ── */
+  .pipe{display:flex;flex-direction:column;gap:0}
+  .stage{display:grid;grid-template-columns:46px 1fr;gap:16px;align-items:start}
+  .num{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;
+    background:var(--accent);color:#fff;font:800 18px/1 var(--body);flex:none}
+  :root[data-theme="dark"] .num,html:not([data-theme]) .num{color:#fff}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .num{background:var(--signal);color:#0C1A14}}
+  :root[data-theme="dark"] .num{background:var(--signal);color:#0C1A14}
+  .body{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 20px;box-shadow:var(--shadow);min-width:0}
+  .body h3{margin-bottom:3px}
+  .where{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:10px;overflow-wrap:anywhere}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin:12px 0 4px}
+  .box{font-family:var(--mono);font-size:12px;background:var(--soft);border:1px solid var(--line);border-radius:7px;padding:6px 10px;min-width:0;overflow-wrap:anywhere}
+  .arrow{color:var(--accent);font-weight:800;flex:none}
+  .why{font-size:14px;color:var(--ink-2);margin-top:10px}
+  .connector{width:46px;display:grid;place-items:center;height:26px}
+  .connector span{width:2px;height:100%;background:var(--line);display:block}
+  .rowpair{display:grid;grid-template-columns:46px 1fr;gap:16px}
+
+  /* ── 例子表 ── */
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:800}
+  td:first-child{color:var(--muted);font-size:13px;white-space:nowrap}
+  .raw{font-family:var(--mono);font-size:12.5px}
+  .derived{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:600}
+
+  /* ── 问题 ── */
+  .prob{border:1px solid var(--line);border-left:4px solid var(--danger);border-radius:0 12px 12px 0;
+    background:var(--card);padding:16px 18px;box-shadow:var(--shadow)}
+  .prob h3{color:var(--danger);margin-bottom:6px}
+  .prob .ev{font-family:var(--mono);font-size:12.5px;background:var(--danger-bg);border-radius:7px;padding:8px 11px;margin:9px 0;overflow-wrap:anywhere}
+  .prob p{font-size:14.5px;color:var(--ink-2)}
+  /* 修好之后的样子：问题块的左边框仍然是红的（它曾经真的坏过），
+     修法块自己是绿的。红→绿 的对照本身就是这一节要讲的东西。 */
+  .prob{border-left-color:var(--signal)}
+  .prob h3{color:var(--ink)}
+  .fix{margin-top:11px;border-left:3px solid var(--signal);background:var(--accent-bg);
+       padding:11px 14px;border-radius:0 9px 9px 0;font-size:14px;color:var(--ink-2);line-height:1.65}
+  .fix code{font-size:12.5px}
+  .fixed-tag{display:inline-block;vertical-align:middle;margin-left:10px;padding:3px 9px;
+       border-radius:999px;background:var(--accent-bg);color:var(--accent);
+       font:800 11px/1.4 var(--body);letter-spacing:.04em;text-transform:none}
+  .shape{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;font-size:14px}
+  .shape>div{padding:11px 14px;border-bottom:1px solid var(--line)}
+  .shape>div:nth-child(odd){background:var(--soft);color:var(--muted);font-weight:600}
+  .shape>div:nth-last-child(-n+2){border-bottom:0}
+  @media(max-width:560px){.shape{grid-template-columns:1fr}.shape>div:nth-child(odd){padding-bottom:2px}}
+  .foot{color:var(--muted);font-size:13px;line-height:1.75}
